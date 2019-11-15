@@ -1,0 +1,4 @@
+crhelper
+boto3
+httpretty
+kafka-python

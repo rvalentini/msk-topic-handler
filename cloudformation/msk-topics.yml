@@ -1,0 +1,58 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "MSK Kafka topic definitions using Custom::MskTopic"
+Parameters:
+  LambdaFunctionName:
+    Type: String
+    Default: msk-topic-handler
+  BootstrapServers: 
+    Description: Bootstrap server URLs for MSK-Kafka cluster
+    Type: String
+  ClientId:
+    Type: String
+    Default: msk-admin
+  
+Resources:
+  TestTopicA: 
+    Type: "Custom::MskTopic"
+    Properties: 
+      ServiceToken: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${LambdaFunctionName}
+      TopicName: "TEST-TOPIC-A"
+      Partitions: 24
+      Replications: 3
+      BootstrapServers: !Ref BootstrapServers
+      ClientId: !Ref ClientId
+  TestTopicB: 
+    Type: "Custom::MskTopic"
+    Properties: 
+      ServiceToken: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${LambdaFunctionName}
+      TopicName: "TEST-TOPIC-B"
+      Partitions: 24
+      Replications: 3
+      BootstrapServers: !Ref BootstrapServers
+      ClientId: !Ref ClientId
+  TestTopicC: 
+    Type: "Custom::MskTopic"
+    Properties: 
+      ServiceToken: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${LambdaFunctionName}
+      TopicName: "TEST-TOPIC-C"
+      Partitions: 24
+      Replications: 3
+      BootstrapServers: !Ref BootstrapServers
+      ClientId: !Ref ClientId
+
+Outputs:
+  TestTopicA:
+    Value: !Ref TestTopicA
+    Description: MSK Kafka Topic 
+    Export:
+      Name: TestTopicA
+  TestTopicB:
+    Value: !Ref TestTopicB
+    Description: MSK Kafka Topic
+    Export:
+      Name: TestTopicB
+  TestTopicC:
+    Value: !Ref TestTopicC
+    Description: MSK Kafka Topic
+    Export:
+      Name: TestTopicC
