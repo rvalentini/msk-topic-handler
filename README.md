@@ -12,7 +12,7 @@ The **msk-topic-handler** function reacts to these Cloudformation signals by cal
 
 ## Usage
 
-A MSK-topic resource definition as part of a Cloudformation script looks like following:
+A MSK-topic resource definition as part of a Cloudformation script looks like the following:
 ~~~
 TestTopicA: 
     Type: "Custom::MskTopic"
@@ -40,9 +40,9 @@ In order to upload the Lambda function, which defines the Cloudformation custom 
 
 ## Local Testing
 
-Inside the `test` directory you can find integration tests for all three CF-signals (CREATE, UPDATE, DELETE).
+Inside the `/test` directory you can find integration tests for all three CF-signals (CREATE, UPDATE and DELETE).
 In order to run the tests, you need to spin up a local Kafka-cluster (e.g. see https://github.com/wurstmeister/kafka-docker).
-In case you have too much free time you could also mock the Kafka topic interactions, any contibution is much appreciated :)
+In case you have too much free time, you could also mock the Kafka topic interactions entirely, any contributions are much appreciated :)
 
 The file `test_lambda_function.py` defines some JSON-objects representing the CF-singnal payloads inline. E.g:
 ~~~
@@ -62,9 +62,9 @@ DELETE = {
 }
 ~~~
 
-When you have a Kafka cluster running, simply execute one of the following from root directory level
+When you have a Kafka cluster running, simply execute one of the following commands from package root directory
 ~~~
 python -m unittest test.test_lambda_function.TestCloudformationSignals.test_create_signal
 python -m unittest test.test_lambda_function.TestCloudformationSignals.test_update_signal
-python -m unittest test.test_lambda_function.TestCloudformationSignals.test_delette_signal
+python -m unittest test.test_lambda_function.TestCloudformationSignals.test_delete_signal
 ~~~
