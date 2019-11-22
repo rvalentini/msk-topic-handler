@@ -21,7 +21,8 @@ CREATE = {
         "Partitions" : "20",
         "Replications": "1" ,
         "BootstrapServers": "localhost:9092",
-        "ClientId": "test-id"
+        "ClientId": "test-id",
+        "RetentionTimeInMs":"5000"
     }
 }
 
@@ -51,11 +52,13 @@ UPDATE = {
         "Partitions" : "15",
         "Replications": "1" ,
         "BootstrapServers": "localhost:9092",
-        "ClientId": "test-id"
+        "ClientId": "test-id",
+        "CleanupPolicy":"compact"
     },
     "OldResourceProperties" : {
         "Replications" : "1",
-        "TopicName" : "test-topic-1" 
+        "TopicName" : "test-topic-1",
+        "RetentionTimeInMs":"5000"
    }
 }
 

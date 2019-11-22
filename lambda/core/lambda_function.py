@@ -24,10 +24,16 @@ def create(event, context):
     name = event['ResourceProperties']['TopicName'] 
     partitions = event['ResourceProperties']['Partitions']
     replications = event['ResourceProperties']['Replications']
-
+    cleanupPolicy = event['ResourceProperties'].get('CleanupPolicy') # We use get since these property is optional
+    retentionTime = event['ResourceProperties'].get('RetentionTimeInMs') # We use get since these property is optional
+    config = {
+        "cleanup.policy": cleanupPolicy if cleanupPolicy is not None else "delete",
+        "retention.ms": retentionTime if retentionTime is not None else "604800000"
+    }
     result = create_topic(name,
                          int(partitions),
-                         int(replications))
+                         int(replications),
+                         config)
         
         
     # add replication for topic to cf-state for later updates
@@ -36,6 +42,9 @@ def create(event, context):
 
     # add original topic names to cf-state for later updates
     persist_original_topic_name(name)
+
+    # add config values to cf-state for later updates
+    persist_original_config(name, cleanupPolicy, retentionTime)
 
 
 
@@ -52,7 +61,13 @@ def update(event, context):
     name = event['ResourceProperties']['TopicName'] 
     partitions = event['ResourceProperties']['Partitions']
     replications = event['ResourceProperties']['Replications']
-
+    cleanupPolicy = event['ResourceProperties'].get('CleanupPolicy')
+    retentionTime = event['ResourceProperties'].get('RetentionTimeInMs')
+    config = {
+        "cleanup.policy": cleanupPolicy if cleanupPolicy is not None else "delete",
+        "retention.ms": retentionTime if retentionTime is not None else "604800000"
+    }
+    
     # retrieve old topic_names from stack data
     old_name = event['OldResourceProperties']['TopicName']
     #load old replication value from stack data if exists
@@ -61,12 +76,21 @@ def update(event, context):
         old_replications = event['OldResourceProperties']['Replications']
     else:
         old_replications = replications
+
+    oldConfig = {}
+    if 'CleanupPolicy' in event['OldResourceProperties']:
+        oldConfig["cleanup.policy"] = event['OldResourceProperties']['CleanupPolicy']
+
+    if 'RetentionTimeInMs' in event['OldResourceProperties']:
+        oldConfig["retention.ms"] = event['OldResourceProperties']['RetentionTimeInMs']    
     
     result = update_topic(name,
                 old_name,
                 int(partitions),
                 int(replications),
-                int(old_replications))
+                int(old_replications),
+                config,
+                oldConfig)
     logger.info('Result of create topic operation: ' + str(result))
 
 
@@ -96,3 +120,8 @@ def persist_replication_state(topic_name, replication):
 def persist_original_topic_name(topic_name):
     helper.Data.update({ 'TopicName' : topic_name })
     logger.info('Persisted TopicName to CF-stack: ' + str(topic_name))
+
+def persist_original_config(topic_name, cleanup_policy, retention_time):
+    helper.Data.update({ topic_name: cleanup_policy })
+    helper.Data.update({ topic_name: retention_time })
+    logger.info('Persisted config of topic ' + str(topic_name) + ' to CF-stack')    
