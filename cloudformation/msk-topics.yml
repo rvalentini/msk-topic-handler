@@ -21,6 +21,7 @@ Resources:
       Replications: 3
       BootstrapServers: !Ref BootstrapServers
       ClientId: !Ref ClientId
+      CleanupPolicy: "compact"
   TestTopicB: 
     Type: "Custom::MskTopic"
     Properties: 
@@ -30,6 +31,7 @@ Resources:
       Replications: 3
       BootstrapServers: !Ref BootstrapServers
       ClientId: !Ref ClientId
+      RetentionTimeInMs: "3600000"
   TestTopicC: 
     Type: "Custom::MskTopic"
     Properties: 
