@@ -53,7 +53,7 @@ DELETE = {
     "LogicalResourceId": "TestResourceId",
     "ResponseURL": "http://cf-callback.com",
     "ResourceProperties": {
-        "TopicName" : "test-topic-2",
+        "TopicName" : "test-topic-1",
         "Partitions" : "15",
         "Replications": "1" ,
         "BootstrapServers": "localhost:9092",
@@ -67,4 +67,14 @@ When you have a Kafka cluster running, simply execute one of the following comma
 python -m unittest test.test_lambda_function.TestCloudformationSignals.test_create_signal
 python -m unittest test.test_lambda_function.TestCloudformationSignals.test_update_signal
 python -m unittest test.test_lambda_function.TestCloudformationSignals.test_delete_signal
+~~~
+
+Note: In case you have trouble connecting to your local Kafka-brokers when running the tests, try to switch the `security_protocol` parameter from `SSL` to `PLAINTEXT` inside the **msk_service.py** file.
+
+The following Kafka CLI commands can be useful when you want to find out what exactly is happening with your topics
+~~~
+# List all topics
+bin/kafka-topics.sh --list --zookeeper localhost:2181
+# View details of test topic
+bin/kafka-topics.sh --describe --bootstrap-server localhost:9092 --topic test-topic-1
 ~~~
