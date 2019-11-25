@@ -13,10 +13,10 @@ def init(bootstrap_servers, client_id):
     global admin_client 
     admin_client = KafkaAdminClient(bootstrap_servers=bootstrap_servers, 
                                     client_id=client_id,
-                                    security_protocol="SSL")  #TODO make SSL configurable
+                                    security_protocol="SSL")  #TODO make PLAINTEXT/SSL configurable
     global consumer 
     consumer = KafkaConsumer(bootstrap_servers=bootstrap_servers,
-                             security_protocol="SSL")  #TODO make SSL configurable
+                             security_protocol="SSL")  #TODO make PLAINTEXT/SSL configurable
 
 
 def create_topic(name, partitions, replication, config):

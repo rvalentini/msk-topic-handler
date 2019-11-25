@@ -93,6 +93,16 @@ def update(event, context):
                 oldConfig)
     logger.info('Result of create topic operation: ' + str(result))
 
+     # add replication for topic to cf-state for later updates
+    persist_replication_state(name, replications)
+    logger.info('Result of create topic operation: ' + str(result))
+
+    # add original topic names to cf-state for later updates
+    persist_original_topic_name(name)
+
+    # add config values to cf-state for later updates
+    persist_original_config(name, cleanupPolicy, retentionTime)
+
 
 
 @helper.delete
@@ -114,7 +124,7 @@ def handler(event, context):
 
 
 def persist_replication_state(topic_name, replication):
-    helper.Data.update({ topic_name : replication})
+    helper.Data.update({ 'Replications' : replication})
     logger.info('Persisted replication state of topic ' + str(topic_name) + ' to CF-stack')
 
 def persist_original_topic_name(topic_name):
@@ -122,6 +132,8 @@ def persist_original_topic_name(topic_name):
     logger.info('Persisted TopicName to CF-stack: ' + str(topic_name))
 
 def persist_original_config(topic_name, cleanup_policy, retention_time):
-    helper.Data.update({ topic_name: cleanup_policy })
-    helper.Data.update({ topic_name: retention_time })
+    if cleanup_policy:
+        helper.Data.update({ 'CleanupPolicy': cleanup_policy })
+    if retention_time:
+        helper.Data.update({ 'RetentionTimeInMs': retention_time })
     logger.info('Persisted config of topic ' + str(topic_name) + ' to CF-stack')    
