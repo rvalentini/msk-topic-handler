@@ -10,7 +10,7 @@ zip -r9 ../function.zip .
 # add function code to zip 
 cd ../core
 echo $(pwd)
-zip -g ../function.zip ./lambda_function.py msk_service.py
+zip -g ../function.zip ./lambda_function.py msk_service.py msk_config.py
 
 # Push new function.zip to AWS
 cd ..
